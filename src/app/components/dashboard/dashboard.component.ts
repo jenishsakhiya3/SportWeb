@@ -849,7 +849,7 @@ export class DashboardComponent implements OnInit {
 
   // Set this to your hosted API URL (e.g. 'https://my-api-domain.com') to target a hosted API.
   // Leave empty '' to use the dev server proxy config (localhost:5135).
-  readonly apiBaseUrl = signal<string>('sportapi-fsadb5hrbzhef6en.eastasia-01.azurewebsites.net');
+  readonly apiBaseUrl = signal<string>('https://sportapi-fsadb5hrbzhef6en.eastasia-01.azurewebsites.net');
 
   // Endpoint Definitions
   readonly apiCalls = signal<ApiCall[]>([
@@ -1198,7 +1198,7 @@ export class DashboardComponent implements OnInit {
     this.checkingServer.set(true);
     this.addLog('info', `Probing server connection at ${targetHost}...`);
     
-    this.http.get(this.apiBaseUrl() + '/weatherforecast')
+    this.http.get(this.apiBaseUrl() + '/sports')
       .pipe(
         catchError(() => {
           return of(null);
