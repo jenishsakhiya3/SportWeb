@@ -42,7 +42,7 @@ interface LogLine {
         <div class="server-status" [class.online]="isServerOnline()" [class.offline]="!isServerOnline()">
           <span class="pulse-dot"></span>
           <span class="status-text">
-            API SERVER: {{ isServerOnline() ? 'ONLINE (localhost:5135)' : 'OFFLINE (localhost:5135)' }}
+            API SERVER: {{ isServerOnline() ? 'ONLINE (' + (apiBaseUrl() || 'localhost:5135') + ')' : 'OFFLINE (' + (apiBaseUrl() || 'localhost:5135') + ')' }}
           </span>
         </div>
       </header>
@@ -53,8 +53,14 @@ interface LogLine {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
         <div class="warning-content">
-          <strong>Backend Offline:</strong> To run live integration requests, launch your C# backend API.
-          <pre class="code-line">cd d:\\SPORT\\SportAPI ; dotnet run</pre>
+          <strong>Backend Offline:</strong> To run live integration requests, launch your backend API.
+          <div *ngIf="!apiBaseUrl()">
+            <span class="instruction-text" style="font-size: 0.85rem; color: var(--text-secondary);">Make sure your local server is running on port 5135:</span>
+            <pre class="code-line">cd d:\\SPORT\\SportAPI ; dotnet run</pre>
+          </div>
+          <div *ngIf="apiBaseUrl()" style="margin-top: 6px;">
+            <span class="instruction-text" style="font-size: 0.85rem; color: var(--text-secondary);">Verify that your hosted server at <code>{{ apiBaseUrl() }}</code> is active and CORS is enabled.</span>
+          </div>
         </div>
         <button class="btn-check-server" (click)="pingServer()" [disabled]="checkingServer()">
           {{ checkingServer() ? 'Probing...' : 'Re-check Connection' }}
@@ -841,6 +847,10 @@ interface LogLine {
 export class DashboardComponent implements OnInit {
   private http = inject(HttpClient);
 
+  // Set this to your hosted API URL (e.g. 'https://my-api-domain.com') to target a hosted API.
+  // Leave empty '' to use the dev server proxy config (localhost:5135).
+  readonly apiBaseUrl = signal<string>('sportapi-fsadb5hrbzhef6en.eastasia-01.azurewebsites.net');
+
   // Endpoint Definitions
   readonly apiCalls = signal<ApiCall[]>([
     {
@@ -1184,10 +1194,11 @@ export class DashboardComponent implements OnInit {
 
   // Probe server connectivity
   pingServer() {
+    const targetHost = this.apiBaseUrl() || 'http://localhost:5135';
     this.checkingServer.set(true);
-    this.addLog('info', 'Probing C# server connection at http://localhost:5135...');
+    this.addLog('info', `Probing server connection at ${targetHost}...`);
     
-    this.http.get('/weatherforecast')
+    this.http.get(this.apiBaseUrl() + '/weatherforecast')
       .pipe(
         catchError(() => {
           return of(null);
@@ -1227,14 +1238,15 @@ export class DashboardComponent implements OnInit {
     const startTime = performance.now();
     let requestObservable: Observable<any>;
 
+    const url = this.apiBaseUrl() + call.endpoint;
     if (call.method === 'GET') {
-      requestObservable = this.http.get(call.endpoint);
+      requestObservable = this.http.get(url);
     } else if (call.method === 'POST') {
-      requestObservable = this.http.post(call.endpoint, call.payload);
+      requestObservable = this.http.post(url, call.payload);
     } else if (call.method === 'PUT') {
-      requestObservable = this.http.put(call.endpoint, call.payload);
+      requestObservable = this.http.put(url, call.payload);
     } else if (call.method === 'DELETE') {
-      requestObservable = this.http.delete(call.endpoint);
+      requestObservable = this.http.delete(url);
     } else {
       requestObservable = of(null);
     }
@@ -1324,14 +1336,15 @@ export class DashboardComponent implements OnInit {
         const startTime = performance.now();
         let requestObservable: Observable<any>;
 
+        const url = this.apiBaseUrl() + call.endpoint;
         if (call.method === 'GET') {
-          requestObservable = this.http.get(call.endpoint);
+          requestObservable = this.http.get(url);
         } else if (call.method === 'POST') {
-          requestObservable = this.http.post(call.endpoint, call.payload);
+          requestObservable = this.http.post(url, call.payload);
         } else if (call.method === 'PUT') {
-          requestObservable = this.http.put(call.endpoint, call.payload);
+          requestObservable = this.http.put(url, call.payload);
         } else if (call.method === 'DELETE') {
-          requestObservable = this.http.delete(call.endpoint);
+          requestObservable = this.http.delete(url);
         } else {
           requestObservable = of(null);
         }
