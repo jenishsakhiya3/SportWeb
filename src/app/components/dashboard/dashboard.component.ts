@@ -1156,6 +1156,17 @@ export class DashboardComponent implements OnInit {
       description: 'Fetch counts summary of sports data objects',
       loading: false,
       expanded: false
+    },
+    {
+      id: 24,
+      label: '21',
+      name: 'GET CPU Stress Test',
+      method: 'GET',
+      endpoint: '/api/diagnostics/cpu-stress?seconds=5',
+      delayMs: 200,
+      description: 'Stress test CPU cores at 100% load on the server',
+      loading: false,
+      expanded: false
     }
   ]);
 
