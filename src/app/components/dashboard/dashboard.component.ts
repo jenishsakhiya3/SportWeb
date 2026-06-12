@@ -1198,7 +1198,7 @@ export class DashboardComponent implements OnInit {
     this.checkingServer.set(true);
     this.addLog('info', `Probing server connection at ${targetHost}...`);
     
-    this.http.get(this.apiBaseUrl() + '/sports')
+    this.http.get(this.apiBaseUrl() + '/api/sports')
       .pipe(
         catchError(() => {
           return of(null);
