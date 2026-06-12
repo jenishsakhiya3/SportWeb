@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/sport-web/browser",
+            "outputPath": "dist/sport-web",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
