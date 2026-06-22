@@ -52,4 +52,4 @@ jobs:
           app-name: 'sportweb-appservice'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_24EDAD50E68F403AAE4F0FBB5E444C7B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_708C68444C654C53BE5A6051DAE0207A }}
